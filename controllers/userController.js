@@ -1,24 +1,22 @@
 "use strict";
 const userModel = require("../models/userModel");
 
-const users = userModel.users;
-
-const user_list_get = (req, res) => {
+const user_list_get = async (req, res) => {
+  const users = await userModel.getAllUsers();
   res.json(users);
 };
 
-const user_get = (req, res) => {
-  var userit = users.filter((user) => user.id == req.params.userid);
-  res.json(userit);
+const user_get = async (req, res) => {
+  var useri = await userModel.getAUser(req.params.userid);
+  res.json(useri);
 };
 
-const user_post = (req, res, next) => {
-  console.log(req.body);
-  res.json(req.body);
+const user_create_post = (req, res) => {
+  userModel.addUser(req.body);
 };
 
 module.exports = {
   user_list_get,
   user_get,
-  user_post,
+  user_create_post,
 };

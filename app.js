@@ -1,4 +1,5 @@
 "use strict";
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -13,5 +14,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 
 app.use("/cat", catti);
 app.use("/user", userit);
+
+app.use("/", express.static("week2_public_html"));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
