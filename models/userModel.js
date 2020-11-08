@@ -9,7 +9,7 @@ const getAllUsers = async () => {
     return rows;
   } catch (e) {
     console.log('userModel error:', e.message);
-    return {error: 'DB Error'};
+    return {error: 'Error'};
   }
 };
 
@@ -20,7 +20,7 @@ const getUser = async (id) => {
     return rows;
   } catch (e) {
     console.log('userModel error:', e.message);
-    return {error: 'DB Error'};
+    return {error: 'Error'};
   }
 }
 
@@ -34,7 +34,7 @@ const addUser = async (params) => {
     return rows;
   } catch (e) {
     console.log('userModel error:', e.message);
-    return {error: 'DB Error'};
+    return {error: 'Error'};
   }
 }
 
