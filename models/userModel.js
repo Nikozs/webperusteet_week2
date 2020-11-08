@@ -4,51 +4,42 @@ const promisePool = pool.promise();
 
 const getAllUsers = async () => {
   try {
-    const [rows] = await promisePool.query(
-      "SELECT user_id,name,email FROM wop_user"
-    );
+    const [rows] = await promisePool.query('SELECT * FROM wop_user');
+    console.log('rows', rows);
     return rows;
   } catch (e) {
-    console.log("error", e.message);
-    return [];
+    console.log('userModel error:', e.message);
+    return {error: 'DB Error'};
   }
 };
 
-const getAUser = async (user_id) => {
+const getUser = async (id) => {
   try {
-    const [rows] = await promisePool.query(
-      "SELECT user_id,NAME,email FROM wop_user WHERE user_id=?",
-      user_id
-    );
-    if (rows.length > 0) {
-      return rows[0];
-    } else {
-      return {};
-    }
+    const [rows] = await promisePool.execute('SELECT * FROM wop_user WHERE user_id = ?', [id]);
+    console.log('rows', rows);
+    return rows;
   } catch (e) {
-    console.log("error", e.message);
-    return {};
+    console.log('userModel error:', e.message);
+    return {error: 'DB Error'};
   }
-};
+}
 
-const addUser = async (user) => {
+const addUser = async (params) => {
   try {
-    var name = user.name;
-    var email = user.email;
-    var password = user.passwd;
-    const u = await promisePool.query(
-      "INSERT INTO wop_user (name,email,password) values (?,?,?)",
-      [name, email, password]
+    const [rows] = await promisePool.execute(
+        'INSERT INTO wop_user (name, email, password) VALUES (?,?,?)',
+        params
     );
-    return u;
+    console.log('rows', rows);
+    return rows;
   } catch (e) {
-    console.log("error", e.message);
-    return {};
+    console.log('userModel error:', e.message);
+    return {error: 'DB Error'};
   }
-};
+}
 
 module.exports = {
   getAllUsers,
-  getAUser,
+  getUser,
   addUser,
 };

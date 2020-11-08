@@ -1,5 +1,8 @@
-"use strict";
-const catModel = require("../models/catModel");
+'use strict';
+const { validationResult } = require('express-validator');
+const catModel = require('../models/catModel');
+
+const cats = catModel.cats;
 
 const cat_list_get = async (req, res) => {
   const cats = await catModel.getAllCats();
@@ -7,29 +10,47 @@ const cat_list_get = async (req, res) => {
 };
 
 const cat_get = async (req, res) => {
-  var katit = await catModel.getACat(req.params.catid);
-  res.json(katit);
+  const id = req.params.id;
+  const cat = await catModel.getCat(id);
+  res.json(cat);
 };
 
-const cat_upload = async (req, res, next) => {
-  console.log(req.file, req.body);
-  var katti = await catModel.addCat(req.body, req.file);
+const cat_create_post = async (req, res) => {
+  console.log('cat_create_post', req.body, req.file);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  
+  const {name, age, weight, owner} = req.body;
+  const params = [name, age, weight, owner, req.file.filename];
+  const cat = await catModel.addCat(params);
+  res.json({message: 'upload ok'});
 };
 
-const cat_update_put = async (req, res, next) => {
-  console.log(req.file, req.body);
-  var katti = await catModel.updateCat(req.body);
+const cat_update_put = async (req, res) => {
+  console.log('cat_update_put', req.body);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+ 
+  const {name, age, weight, owner, id} = req.body;
+  const params = [name, age, weight, owner, id];
+  const cat = await catModel.updateCat(params);
+  res.json({message: 'modify ok'});
 };
 
-const cat_delete = async (req, res, next) => {
-  var katit = await catModel.deleteCat(req.params.id);
-  res.json(katit);
+const cat_delete = async (req, res) => {
+  const id = req.params.id;
+  const cat = await catModel.deleteCat(id);
+  res.json(cat);
 };
 
 module.exports = {
   cat_list_get,
   cat_get,
-  cat_upload,
+  cat_create_post,
   cat_update_put,
   cat_delete,
 };
